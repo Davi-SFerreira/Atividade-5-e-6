@@ -1,0 +1,31 @@
+CREATE TYPE status_entrega AS ENUM ('CRIADA', 'EM_TRANSITO', 'ENTREGUE', 'CANCELADA');
+CREATE TYPE status_motorista AS ENUM ('ATIVO', 'INATIVO');
+
+CREATE TABLE IF NOT EXISTS motoristas (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  cpf VARCHAR(11) NOT NULL UNIQUE,
+  placa_veiculo VARCHAR(20) NOT NULL,
+  status status_motorista NOT NULL DEFAULT 'ATIVO',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS entregas (
+  id SERIAL PRIMARY KEY,
+  descricao TEXT NOT NULL,
+  origem VARCHAR(255) NOT NULL,
+  destino VARCHAR(255) NOT NULL,
+  status status_entrega NOT NULL DEFAULT 'CRIADA',
+  motorista_id INTEGER REFERENCES motoristas(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS eventos_entrega (
+  id SERIAL PRIMARY KEY,
+  entrega_id INTEGER NOT NULL REFERENCES entregas(id) ON DELETE CASCADE,
+  tipo VARCHAR(100) NOT NULL,
+  descricao TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
