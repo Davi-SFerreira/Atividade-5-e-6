@@ -46,3 +46,10 @@ rotas.get('/api/motoristas/:id', motoristasController.buscarPorId);
 rotas.get('/api/motoristas/:id/entregas', motoristasController.buscarEntregas);
 
 export default rotas;
+
+const RelatoriosController = require('../controllers/RelatoriosController');
+const relatoriosController = new RelatoriosController();
+
+// Adicione essas duas linhas junto das outras rotas:
+router.get('/relatorios/entregas-por-status', (req, res) => relatoriosController.entregasPorStatus(req, res));
+router.get('/relatorios/motoristas-ativos', (req, res) => relatoriosController.motoristasAtivos(req, res));
