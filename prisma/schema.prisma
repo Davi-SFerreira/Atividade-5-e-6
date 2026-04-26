@@ -1,13 +1,59 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StatusEntrega {
+  CRIADA
+  EM_TRANSITO
+  ENTREGUE
+  CANCELADA
+}
+
+enum StatusMotorista {
+  ATIVO
+  INATIVO
+}
+
+model Motorista {
+  id           Int             @id @default(autoincrement())
+  nome         String
+  cpf          String          @unique
+  placaVeiculo String          @map("placa_veiculo")
+  status       StatusMotorista @default(ATIVO)
+  entregas     Entrega[]
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+
+  @@map("motoristas")
+}
+
+model Entrega {
+  id          Int             @id @default(autoincrement())
+  descricao   String
+  origem      String
+  destino     String
+  status      StatusEntrega   @default(CRIADA)
+  motorista   Motorista?      @relation(fields: [motoristaId], references: [id])
+  motoristaId Int?            @map("motorista_id")
+  historico   EventoEntrega[]
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  @@map("entregas")
+}
+
+model EventoEntrega {
+  id        Int      @id @default(autoincrement())
+  entrega   Entrega  @relation(fields: [entregaId], references: [id], onDelete: Cascade)
+  entregaId Int      @map("entrega_id")
+  tipo      String
+  descricao String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("eventos_entrega")
 }
