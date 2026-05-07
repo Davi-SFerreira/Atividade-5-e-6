@@ -1,4 +1,5 @@
 import express from 'express';
+import "dotenv/config";
 import rotasEntregas from './routes/index.routes.js';
 
 const app = express();

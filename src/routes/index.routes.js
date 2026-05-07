@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { Database } from '../database/database.js';
-import { EntregasRepository } from '../repositories/entregas.repository.js';
-import { MotoristasRepository } from '../repositories/motoristas.repository.js';
+//import { Database } from '../database/bd.js';
+const EntregasRepository = require ('../repositories/entregas.repository copy.js');
+const MotoristasRepository = require ('../repositories/motoristas.repository copy.js');
 import { EntregasService } from '../services/entregas.service.js';
 import { MotoristasService } from '../services/motoristas.service.js';
 import { EntregasController } from '../controllers/entregas.controller.js';
@@ -12,11 +12,11 @@ const rotas = Router();
 // ==========================================
 // COMPOSIÇÃO DE DEPENDÊNCIAS (BOOTSTRAP)
 // ==========================================
-const database = new Database();
+//const database = new Database();
 
 // Repositories
-const entregasRepo = new EntregasRepository(database);
-const motoristasRepo = new MotoristasRepository(database);
+const entregasRepo = new EntregasRepository();
+const motoristasRepo = new MotoristasRepository();
 
 // Services (Injeção via contratos)
 const entregasService = new EntregasService(entregasRepo, motoristasRepo);
